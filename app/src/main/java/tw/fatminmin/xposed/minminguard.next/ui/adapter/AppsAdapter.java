@@ -108,12 +108,19 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
         }
     }
 
-    /** Selects everything, or clears the selection when all are already selected. */
+    /** Selects everything, or clears the selection when all are already selected.
+        Selection mode is entered implicitly (the batch bar is always visible now),
+        so the cards get highlighted and taps toggle selection without needing a
+        prior long-press. */
     public void toggleSelectAll()
     {
         if (appList.isEmpty())
         {
             return;
+        }
+        if (!mSelectionMode)
+        {
+            setSelectionMode(true);
         }
         if (mSelected.size() == appList.size())
         {
@@ -268,6 +275,11 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
             {
                 SwitchCompat sw = (SwitchCompat) v;
                 setState(currentAppDetails.getPackageName(), sw.isChecked());
+                /* Keep the in-memory list in sync with the pref, otherwise a
+                   later notifyDataSetChanged() (e.g. the Apply button) rebinds
+                   the row from the stale cached value and silently reverts the
+                   manual toggle. */
+                currentAppDetails.setEnabled(sw.isChecked());
             }
         });
 

@@ -39,4 +39,9 @@ public class AppDetails
     {
         return isEnabled;
     }
+
+    public void setEnabled(boolean enabled)
+    {
+        isEnabled = enabled;
+    }
 }

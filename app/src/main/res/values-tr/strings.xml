@@ -52,6 +52,7 @@
     <string name="msg_show_debug">Xposed günlüğünde hata ayıklama bilgilerini göster</string>
     <string name="msg_show_launcher_icon">Başlatıcı simgesini göster</string>
     <string name="msg_mode_apply">Uygula</string>
+    <string name="msg_mode_applied">%1$s modu uygulandı</string>
     <string name="msg_block_num">%d reklam engellendi</string>
     <string name="msg_ad_networks">Reklam Ağları:</string>
     <string name="msg_ads_blocked">Engellenen Reklamlar:</string>

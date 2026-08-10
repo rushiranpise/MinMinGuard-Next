@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
+
 import tw.fatminmin.xposed.minminguard.next.Common;
 import tw.fatminmin.xposed.minminguard.next.FrameworkInfo;
 import tw.fatminmin.xposed.minminguard.next.R;
@@ -39,8 +42,10 @@ public class MainFragment extends Fragment
         public void onClick(View v)
         {
             mModPref.edit().putString(Common.KEY_MODE, Common.getModeString(mMode)).apply();
-            mBtnMode.setVisibility(View.GONE);
             adapter.notifyDataSetChanged();
+            String[] titles = getResources().getStringArray(R.array.mode_array);
+            String modeName = mMode.ordinal() < titles.length ? titles[mMode.ordinal()] : "";
+            Snackbar.make(v, getString(R.string.msg_mode_applied, modeName), Snackbar.LENGTH_SHORT).show();
         }
     };
 
@@ -65,11 +70,9 @@ public class MainFragment extends Fragment
 
     public void refreshUI()
     {
-        if (mModPref.getString(Common.KEY_MODE, Common.VALUE_MODE_BLACKLIST).equals(Common.getModeString(mMode)))
-        {
-            mBtnMode.setVisibility(View.GONE);
-        }
-        else
+        /* The Apply button is always visible now - clicking it re-applies this
+           tab's mode with a confirmation. Nothing to toggle here. */
+        if (mBtnMode != null)
         {
             mBtnMode.setVisibility(View.VISIBLE);
         }
@@ -121,12 +124,8 @@ public class MainFragment extends Fragment
 
         mTxtRuntime.setText(FrameworkInfo.describe(getActivity()));
 
-        /* setup apply button */
+        /* setup apply button (always visible; clicking re-applies this tab's mode) */
         mBtnMode.setOnClickListener(btnModeClick);
-        if (mModPref.getString(Common.KEY_MODE, Common.VALUE_MODE_BLACKLIST).equals(Common.getModeString(mMode)))
-        {
-            mBtnMode.setVisibility(View.GONE);
-        }
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mainActivity));
         adapter = new AppsAdapter(getActivity(), mainActivity.masterAppList, mMode);
