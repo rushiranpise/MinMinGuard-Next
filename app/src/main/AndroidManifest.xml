@@ -45,7 +45,7 @@
 
         <provider
                 android:name=".MinMinProvider"
-                android:authorities="tw.fatminmin.xposed.minminguard"
+                android:authorities="tw.fatminmin.xposed.minminguard.next"
                 android:enabled="true"
                 android:exported="true"/>
 
@@ -63,6 +63,6 @@
                 android:value="true"/>
         <meta-data
                 android:name="xposedscope"
-                android:value="android\ntw.fatminmin.xposed.minminguard"/>
+                android:value="android\ntw.fatminmin.xposed.minminguard.next"/>
     </application>
 </manifest>

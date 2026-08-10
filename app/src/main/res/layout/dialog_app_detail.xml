@@ -37,7 +37,7 @@
                         android:textColor="?attr/colorOnSurface"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        tools:text="MinMinGuard"/>
+                        tools:text="MinMinGuard Next"/>
 
                 <TextView
                         android:id="@+id/detail_pkg_name"
@@ -46,7 +46,7 @@
                         android:layout_marginTop="2dp"
                         android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="13sp"
-                        tools:text="tw.fatminmin.xposed.minminguard"/>
+                        tools:text="tw.fatminmin.xposed.minminguard.next"/>
 
             </LinearLayout>
         </LinearLayout>

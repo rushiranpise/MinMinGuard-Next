@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace 'tw.fatminmin.xposed.minminguard'
+    namespace 'tw.fatminmin.xposed.minminguard.next'
 
     signingConfigs {
         release {
@@ -23,7 +23,7 @@ android {
     compileSdk 37
 
     defaultConfig {
-        applicationId "tw.fatminmin.xposed.minminguard"
+        applicationId "tw.fatminmin.xposed.minminguard.next"
         minSdk 21
         targetSdk 36
         versionCode 72

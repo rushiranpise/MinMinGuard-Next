@@ -46,7 +46,7 @@
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    tools:text="MinMinGuard"/>
+                    tools:text="MinMinGuard Next"/>
 
             <TextView
                     android:id="@+id/txt_block_num"

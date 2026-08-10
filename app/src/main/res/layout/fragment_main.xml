@@ -4,7 +4,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context="tw.fatminmin.xposed.minminguard.ui.fragments.MainFragment">
+                tools:context="tw.fatminmin.xposed.minminguard.next.ui.fragments.MainFragment">
 
     <TextView
             android:id="@+id/txt_xposed_enable"
