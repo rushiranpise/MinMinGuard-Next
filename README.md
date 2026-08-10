@@ -1,4 +1,8 @@
-# ![icon](images/ic_launcher.png) MinMinGuard Next
+<p align="center">
+  <img src="images/ic_launcher.png" alt="MinMinGuard Next" />
+</p>
+
+# MinMinGuard Next
 
 > **MinMinGuard Next** is the actively maintained successor of the original
 > [MinMinGuard](http://forum.xda-developers.com/xposed/modules/xposed-minminguard-v1-7-0-cancelled-t2597332)
