@@ -22,7 +22,9 @@
 
 MinMinGuard Next is an ad-remover made with the Xposed Framework for Android. It can completely remove both the ads inside apps and the empty space caused by those ads. Conventional ads-removing apps are only able to block the ad content, but the space taken by the ad will still remain unused (black). MinMinGuard Next successfully removes that black space, which extends the app window and makes your user-experience better!
 
-![Comparison](http://fatminmin.com/mmg/compare.png)
+<p align="center">
+  <img src="images/compare.png" alt="Comparison" width="600" />
+</p>
 
 How it works:
 
