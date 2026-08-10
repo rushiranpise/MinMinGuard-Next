@@ -1,5 +1,8 @@
 <resources>
 
+    <!-- Launcher icon background (matches the app's surfaceContainer tone) -->
+    <color name="ic_launcher_background">#F8E9E6</color>
+
     <!-- ===== Material 3 color roles (red seed) ===== -->
     <color name="primary">#B3261E</color>
     <color name="onPrimary">#FFFFFF</color>
