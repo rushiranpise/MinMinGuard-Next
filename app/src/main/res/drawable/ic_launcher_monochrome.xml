@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Monochrome layer for Android 13+ themed launcher icons. -->
+<!-- Monochrome layer for Android 13+ themed launcher icons: the MMG Next
+     octagon badge with an "M" cutout (even-odd fill), mirroring the white
+     octagon + red "MMG" text of the full-color design. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
         android:width="108dp"
         android:height="108dp"
@@ -7,19 +9,7 @@
         android:viewportHeight="108">
     <path
             android:fillColor="#FFFFFFFF"
-            android:pathData="M28,34
-                C28,26.268 34.268,20 42,20
-                L66,20
-                C73.732,20 80,26.268 80,34
-                L80,58
-                C80,68 74.5,76.5 66,81
-                C57.5,85.5 50.5,85.5 42,81
-                C33.5,76.5 28,68 28,58 Z
-                M42,44
-                L50,62
-                L58,44
-                L64,44
-                L54,68
-                L46,68
-                L36,44 Z"/>
+            android:fillType="evenOdd"
+            android:pathData="M85.4,41 L67,22.6 L41,22.6 L22.6,41 L22.6,67 L41,85.4 L67,85.4 L85.4,67 Z
+                M40,72 L40,36 L54,58 L68,36 L68,72 Z"/>
 </vector>

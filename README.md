@@ -66,49 +66,60 @@ If you have any idea or need some support, you are welcome to post on the
 
 ### Adding a new ad network into support
 
-You may find some apps' ads are not blocked and removed by MinMinGuard. This may happen because the
-apps use non-supported ad networks (some local ads providers, ex: Vpon in Taiwan). In this case you
-can help by reverse engineering the app and adding the non-supported ad network into support.
+You may find some apps' ads are not blocked by MinMinGuard. This usually happens because the app
+uses an ad SDK that is not yet supported (e.g. a local ad provider, or a new SDK). Adding support
+for a new network is a small, self-contained task:
+
+1.  **Find the ad SDK inside a real app.** Install an app that still shows ads and pull its APK
+    (`adb pull` or an APK extractor). Open the classes with a decompiler (jadx / APKTool) and look
+    for the SDK's package root (e.g. `com.something.sdk.ads`). Identify the **banner view class**
+    (e.g. `...AdView`) and the **loading/showing methods** (`loadAd`, `showInterstitial`, ...).
+2.  **Create a blocker class** in
+    `app/src/main/java/tw/fatminmin/xposed/minminguard.next/blocker/adnetwork/`, extending `Blocker`.
+3.  **Register it** in the `blockers` array in `Main.java`.
+4.  **Build, install, enable, and test** in LSPosed (see below).
+
+#### The `Blocker` contract
 
 ```java
 public abstract class Blocker {
-    /**
-     * @param packageName
-     * @param lpparam
-     * @return True if current app uses this ad network. False otherwise.
-     */
     abstract public boolean handleLoadPackage(final String packageName, XC_LoadPackage.LoadPackageParam lpparam);
     abstract public String getBanner();
     abstract public String getBannerPrefix();
-    public String getName() {
-        return getClass().getSimpleName();
-    }
+    public String getName() { return getClass().getSimpleName(); }
 }
 ```
 
-You can implement an ad network blocker by extending the `Blocker` class. The `handleLoadPackage`
-method is used for **API-based blocking** to intercept api calls for loading ads from the ad view.
-You can leverage `ApiBlocking.removeBanner` and `ApiBlocking.blockAdFunction` to remove banner views
-and block ad functions. The `getBanner` and `getBannerPrefix` methods are used for **Name-based
-blocking**. You can return `null` and name-based blocking will not be triggered.
+- `handleLoadPackage` – **API-based blocking**. Hook the SDK's ad-loading methods and neuter them.
+- `getBanner` / `getBannerPrefix` – **name-based blocking**. Return the banner view class name and
+  its package prefix so the `ViewGroup.addView()` / `LayoutInflater.inflate()` hooks can collapse
+  the ad's empty space. Return `null`/`null` to skip name-based blocking.
+
+#### The `ApiBlocking` helpers
+
+All helpers return `true` when the target class/method was actually hooked:
+
+| Helper | What it does |
+|---|---|
+| `removeBanner(pkg, cls, func, lp)` | Hooks a banner method and makes it a no-op so the view collapses |
+| `removeBannerWithResult(pkg, cls, func, result, lp)` | Same, but the method returns `result` |
+| `blockAdFunction(pkg, cls, func, lp)` | Blocks a method by short-circuiting it |
+| `blockAdFunctionExact(pkg, cls, func, param..., lp)` | Blocks only the overload matching the given parameters |
+| `blockAdFunctionWithResult(pkg, cls, func, result, lp)` | Blocks and returns `result` instead of executing |
+| `blockAdFunctionWithResultExact(pkg, cls, func, params..., result, lp)` | Same, with exact-parameter matching |
+
+`Util.log(pkg, msg)` writes to the Xposed log – use it to debug whether a hook fired.
+
+#### Example: the current `Flurry` blocker
 
 ```java
 public class Flurry extends Blocker {
-
   public static final String BANNER = "com.flurry.android.FlurryAds";
   public static final String BANNER_PREFIX = "com.flurry.android";
-
   public static final String NATIVE_AD = "com.flurry.android.ads.FlurryAdNative";
 
-  @Override
-  public String getBannerPrefix() {
-    return BANNER_PREFIX;
-  }
-
-  @Override
-  public String getBanner() {
-    return BANNER;
-  }
+  @Override public String getBannerPrefix() { return BANNER_PREFIX; }
+  @Override public String getBanner() { return BANNER; }
 
   public boolean handleLoadPackage(final String packageName, LoadPackageParam lpparam) {
     boolean result = false;
@@ -120,20 +131,29 @@ public class Flurry extends Blocker {
 }
 ```
 
+#### Activating your blocker
+
+Add it to the `blockers` array in `Main.java` – this is the ONLY registration point:
+
 ```java
 public static Blocker[] blockers = {
-        /* Popular adnetwork */
-        new Ad2iction(), new Adbert(), new Adfurikun(), new AdMarvel(), new Admob(), new AdmobGms(), new Amazon(),
-        new Amobee(), new AppBrain(), new Bonzai(), new Chartboost(), new Domob(), new Facebook(), new Flurry(),
-        new GmsDoubleClick(), new Hodo(), new ImpAct(), new Inmobi(), new Intowow(), new KuAd(), new mAdserve(),
-        new Madvertise(), new MasAd(), new MdotM(), new Millennial(), new Mobclix(), new MoPub(), new Nend(),
-        new Og(), new Onelouder(), new OpenX(), new SmartAdserver(), new Smarti(), new Startapp(), new Tapfortap(),
-        new TWMads(), new UnityAds(), new Vpadn(), new Vpon(), new Waystorm(), new Yahoo()
+        new Ad2iction(), new Adbert(), new Adcolony(), new Adfurikun(), new AdMarvel(), new AppodealMRAID(), new GoogleAdmob(), new GoogleGms(), new Adtech(), new Amazon(), new Amobee(),
+        new Aotter(), new AppBrain(), new Applovin(), new Appnext(), new Avocarrot(), new Bonzai(), new Chartboost(), new Clickforce(), new Domob(), new Facebook(),
+        new Freewheel(), new Flurry(), new GoogleGmsDoubleClick(), new Hodo(), new Inmobi(), new Intowow(), new Ironsource(), new KuAd(), new mAdserve(), new Madvertise(),
+        new MasAd(), new MdotM(), new Millennial(), new Mobclix(), new MobFox(), new MoPub(), new Nend(), new Og(), new Onelouder(), new OpenX(), new SmartAdserver(), new SourcekitMRAID(),
+        new Startapp(), new Tapfortap(), new TWMads(), new UnityAds(), new Vpadn(), new Vpon(), new Vungle(), new Waystorm(), new Yandex(),
+        // new MyNewNetwork()  <-- add yours here
 };
 ```
 
-Above is a classic example. After you complete the new blocker, remember to add it to the `blockers`
-array in the `Main` class to activate it.
+#### Testing
+
+1. Build and install the debug APK.
+2. In LSPosed, enable the module and add the test app to its scope (or use **Auto** mode).
+3. Reboot, open the test app, and check `LSPosed log` for your `Util.log` messages.
+4. If the ad is gone **and** the empty space collapses, your blocker works. If only the ad content
+   is gone but the space remains, your `getBanner()`/`getBannerPrefix()` need fixing (name-based
+   blocking is what removes the empty banner space).
 
 ## Building
 
