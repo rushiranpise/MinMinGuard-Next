@@ -75,11 +75,11 @@ public class MainActivity extends AppCompatActivity
                     showIntro();
                     break;
                 case R.id.action_donate:
-                    Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=47GXTVHUB4LYS"));
+                    Intent it = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/rushiranpise/MinMinGuard-Next"));
                     startActivity(it);
                     break;
                 case R.id.action_about:
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://fatminmin.com/pages/minminguard.html")));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/rushiranpise/MinMinGuard-Next")));
                     break;
                 default:
                     break;
