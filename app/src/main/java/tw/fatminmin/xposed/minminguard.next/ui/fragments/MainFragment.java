@@ -88,7 +88,25 @@ public class MainFragment extends Fragment
 
         TextView mTxtXposedEnabled = view.findViewById(R.id.txt_xposed_enable);
         TextView mTxtRuntime = view.findViewById(R.id.txt_runtime);
+        TextView mTxtModeInfo = view.findViewById(R.id.txt_mode_info);
         mBtnMode = view.findViewById(R.id.btn_mode);
+
+        /* Short explanation of how the current mode behaves. */
+        int modeInfoRes;
+        switch (mMode)
+        {
+            case AUTO:
+                modeInfoRes = R.string.mode_info_auto;
+                break;
+            case WHITELIST:
+                modeInfoRes = R.string.mode_info_whitelist;
+                break;
+            case BLACKLIST:
+            default:
+                modeInfoRes = R.string.mode_info_blacklist;
+                break;
+        }
+        mTxtModeInfo.setText(modeInfoRes);
 
         RecyclerView mRecyclerView = view.findViewById(R.id.recycler_view);
 

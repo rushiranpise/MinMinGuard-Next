@@ -63,4 +63,9 @@
     <string name="nav_title">Menu</string>
     <string name="option_enable_url_filter">Enable url filtering</string>
     <string name="msg_runtime">Framework: %1$s   |   Root: %2$s</string>
+
+    <string name="mode_info_title">How this mode works</string>
+    <string name="mode_info_auto">Ad blocking is applied to every app automatically using built-in rules for known ad networks and common ad SDKs. No setup needed - just enable the module and reboot.</string>
+    <string name="mode_info_blacklist">Only the apps you switch ON are blocked. Everything else is left untouched. Use this when you want ads blocked in a few specific apps.</string>
+    <string name="mode_info_whitelist">Only the apps you switch ON are allowed to keep ads. Ads are blocked everywhere else. Use this to keep ads in apps you like.</string>
 </resources>

@@ -31,11 +31,48 @@
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="12sp"/>
 
+    <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mode_info_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_runtime"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutlineVariant"
+            app:strokeWidth="1dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+            <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/mode_info_title"
+                    android:src="@drawable/ic_info"/>
+
+            <TextView
+                    android:id="@+id/txt_mode_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="13sp"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_runtime"
+            android:layout_below="@+id/mode_info_card"
             android:paddingTop="6dp"
             android:scrollbars="vertical"/>
 
