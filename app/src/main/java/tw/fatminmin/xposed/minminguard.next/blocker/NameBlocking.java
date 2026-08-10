@@ -25,6 +25,44 @@ public final class NameBlocking
         return bannerPrefix != null && clazzName.startsWith(bannerPrefix);
     }
 
+    /* User-defined view class prefixes (Settings -> Custom ad class prefixes). */
+    private static java.util.List<String> userPrefixes = null;
+
+    private static java.util.List<String> getUserPrefixes()
+    {
+        if (userPrefixes != null)
+        {
+            return userPrefixes;
+        }
+        userPrefixes = new java.util.ArrayList<>();
+        try
+        {
+            de.robv.android.xposed.XSharedPreferences pref =
+                    new de.robv.android.xposed.XSharedPreferences(
+                            tw.fatminmin.xposed.minminguard.next.Main.class.getPackage().getName(),
+                            tw.fatminmin.xposed.minminguard.next.Common.MOD_PREFS);
+            if (pref.getFile().canRead())
+            {
+                String user = pref.getString(tw.fatminmin.xposed.minminguard.next.Common.KEY_USER_BLOCK_PREFIXES, "");
+                if (user != null)
+                {
+                    for (String line : user.split("\n"))
+                    {
+                        String prefix = line.trim();
+                        if (prefix.length() > 0)
+                        {
+                            userPrefixes.add(prefix);
+                        }
+                    }
+                }
+            }
+        }
+        catch (Throwable ignored)
+        {
+        }
+        return userPrefixes;
+    }
+
     // return adnetwork name
     private static Boolean isAdView(Context context, String pkgName, String clazzName)
     {
@@ -35,6 +73,16 @@ public final class NameBlocking
         // corner case
         if (clazzName.startsWith("com.google.ads"))
             return true;
+
+        // user-defined prefixes
+        for (String prefix : getUserPrefixes())
+        {
+            if (clazzName.startsWith(prefix))
+            {
+                Util.notifyAdNetwork(context, pkgName, "Custom");
+                return true;
+            }
+        }
 
         for (Blocker blocker : Main.blockers)
         {

@@ -68,4 +68,40 @@
     <string name="mode_info_auto">Ad blocking is applied to every app automatically using built-in rules for known ad networks and common ad SDKs. No setup needed - just enable the module and reboot.</string>
     <string name="mode_info_blacklist">Only the apps you switch ON are blocked. Everything else is left untouched. Use this when you want ads blocked in a few specific apps.</string>
     <string name="mode_info_whitelist">Only the apps you switch ON are allowed to keep ads. Ads are blocked everywhere else. Use this to keep ads in apps you like.</string>
+
+    <!-- Settings: new options -->
+    <string name="setting_theme">Theme</string>
+    <string name="setting_theme_system">System default</string>
+    <string name="setting_theme_light">Light</string>
+    <string name="setting_theme_dark">Dark</string>
+    <string name="setting_sort">Sort apps by</string>
+    <string name="setting_sort_name">App name</string>
+    <string name="setting_sort_package">Package name</string>
+    <string name="setting_sort_blocked">Ads blocked</string>
+    <string name="setting_export_config">Export configuration</string>
+    <string name="setting_import_config">Import configuration</string>
+    <string name="setting_user_prefixes">Custom ad class prefixes</string>
+    <string name="setting_user_prefixes_hint">One class name prefix per line, e.g.\ncom.example.adnetwork\nViews from matching classes are treated as ads.</string>
+    <string name="msg_config_exported">Configuration exported</string>
+    <string name="msg_config_imported">Configuration imported</string>
+    <string name="msg_config_import_failed">Import failed: invalid file</string>
+    <string name="msg_config_export_failed">Export failed</string>
+
+    <!-- Batch selection -->
+    <string name="batch_select_all">Select all</string>
+    <string name="batch_deselect_all">Deselect all</string>
+    <string name="batch_enable">Enable</string>
+    <string name="batch_disable">Disable</string>
+    <string name="batch_cancel">Cancel</string>
+    <string name="batch_selected">%1$d selected</string>
+    <string name="msg_batch_done">Updated %1$d apps</string>
+
+    <!-- Statistics -->
+    <string name="action_statistics">Statistics</string>
+    <string name="stats_total_blocked">Total ads blocked</string>
+    <string name="stats_top_apps">Top apps</string>
+    <string name="stats_top_networks">Top ad networks</string>
+    <string name="stats_empty">No blocking data yet. Open some apps that show ads and check back later.</string>
+    <string name="stats_apps_count">%1$d apps</string>
+    <string name="stats_networks_count">%1$d networks</string>
 </resources>

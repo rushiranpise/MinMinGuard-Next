@@ -31,6 +31,9 @@ public class MainFragment extends Fragment
     private Button mBtnMode;
     private AppsAdapter adapter;
     private SharedPreferences mModPref;
+    private View mBatchBar;
+    private TextView mTxtBatchCount;
+    private Button mBtnBatchSelectAll;
     private final View.OnClickListener btnModeClick = new View.OnClickListener()
     {
         @Override
@@ -56,6 +59,9 @@ public class MainFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        /* Resolve the mode as early as possible so background refresh()
+           (which calls getMode()) is safe even before the view exists. */
+        mMode = FragmentMode.values()[getArguments().getInt("mode")];
     }
 
     public void refreshUI()
@@ -82,7 +88,6 @@ public class MainFragment extends Fragment
 
         mainActivity = (MainActivity) getActivity();
         mModPref = mainActivity.modPref;
-        mMode = FragmentMode.values()[getArguments().getInt("mode")];
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -128,8 +133,96 @@ public class MainFragment extends Fragment
         adapter = new AppsAdapter(getActivity(), mainActivity.masterAppList, mMode);
         mRecyclerView.setAdapter(adapter);
 
+        /* batch selection bar (shown on long-press; hidden in AUTO mode) */
+        mBatchBar = view.findViewById(R.id.batch_bar);
+        mTxtBatchCount = view.findViewById(R.id.txt_batch_count);
+        mBtnBatchSelectAll = view.findViewById(R.id.btn_batch_select_all);
+        mBtnBatchSelectAll.setOnClickListener(v -> adapter.toggleSelectAll());
+        view.findViewById(R.id.btn_batch_enable).setOnClickListener(v -> applyBatch(true));
+        view.findViewById(R.id.btn_batch_disable).setOnClickListener(v -> applyBatch(false));
+        view.findViewById(R.id.btn_batch_cancel).setOnClickListener(v -> exitSelectionMode());
+        adapter.setOnSelectionChangedListener(count ->
+        {
+            if (mTxtBatchCount != null)
+            {
+                mTxtBatchCount.setText(getString(R.string.batch_selected, count));
+            }
+            updateSelectAllLabel(count);
+        });
+        adapter.setOnSelectionModeListener(this::enterSelectionMode);
+        if (mMode == FragmentMode.AUTO)
+        {
+            mBatchBar.setVisibility(View.GONE);
+        }
+
         isAlive = true;
         return view;
+    }
+
+    private void applyBatch(boolean enable)
+    {
+        java.util.List<String> selected = adapter.getSelectedPackages();
+        if (selected.isEmpty())
+        {
+            exitSelectionMode();
+            return;
+        }
+        SharedPreferences.Editor editor = mModPref.edit();
+        for (String pkg : selected)
+        {
+            if (mMode == FragmentMode.BLACKLIST)
+            {
+                editor.putBoolean(pkg, enable);
+            }
+            else if (mMode == FragmentMode.WHITELIST)
+            {
+                editor.putBoolean(Common.getWhiteListKey(pkg), enable);
+            }
+        }
+        editor.apply();
+        exitSelectionMode();
+        mainActivity.refresh(false);
+    }
+
+    private void exitSelectionMode()
+    {
+        if (adapter != null)
+        {
+            adapter.setSelectionMode(false);
+        }
+        if (mBatchBar != null)
+        {
+            mBatchBar.setVisibility(View.GONE);
+        }
+    }
+
+    private void enterSelectionMode()
+    {
+        if (mMode == FragmentMode.AUTO || adapter == null || mBatchBar == null)
+        {
+            return;
+        }
+        adapter.setSelectionMode(true);
+        mBatchBar.setVisibility(View.VISIBLE);
+        mTxtBatchCount.setText(getString(R.string.batch_selected, 0));
+        updateSelectAllLabel(0);
+    }
+
+    /** "Select all" flips to "Deselect all" once every app is selected. */
+    private void updateSelectAllLabel(int count)
+    {
+        if (mBtnBatchSelectAll == null || adapter == null)
+        {
+            return;
+        }
+        boolean allSelected = count > 0 && count >= adapter.getItemCount();
+        mBtnBatchSelectAll.setText(allSelected ? R.string.batch_deselect_all : R.string.batch_select_all);
+    }
+
+    /** Called from the adapter long-press to reveal the batch bar. */
+    public void onAdapterSelectionRequested()
+    {
+        enterSelectionMode();
     }
 
     public FragmentMode getMode()
@@ -139,8 +232,21 @@ public class MainFragment extends Fragment
 
     public void updateAndNotify(ArrayList<AppDetails> list)
     {
-        adapter.setAppList(list);
-        adapter.notifyDataSetChanged();
+        /* Guard against a refresh() finishing after the view was destroyed
+           (e.g. activity recreate on theme change / rotation). */
+        if (adapter != null)
+        {
+            adapter.setAppList(list);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        isAlive = false;
+        adapter = null;
     }
 
     public enum FragmentMode

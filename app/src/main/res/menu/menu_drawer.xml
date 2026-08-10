@@ -4,6 +4,9 @@
     <item android:id="@+id/action_settings"
           android:title="@string/action_settings"
           android:icon="@drawable/ic_settings_black_24dp"/>
+    <item android:id="@+id/action_statistics"
+          android:title="@string/action_statistics"
+          android:icon="@drawable/about"/>
     <item android:id="@+id/action_tutorial"
           android:title="@string/action_tutorial"
           android:icon="@drawable/tutorial"/>

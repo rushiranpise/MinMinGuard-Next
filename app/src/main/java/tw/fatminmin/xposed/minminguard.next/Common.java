@@ -18,12 +18,24 @@ public class Common
     public final static String KEY_FIRST_TIME = "first_time_2_0_alpha_7";
     public final static String KEY_SHOW_SYSTEM_APPS = "show_system_apps";
     public final static String KEY_SHOW_LAUNCHER_ICON = "show_launcher_icon";
+    public final static String KEY_ENABLE_CRASH_REPORT = "enable_crash_report";
+    public final static String KEY_THEME = "theme";
+    public final static String VALUE_THEME_SYSTEM = "system";
+    public final static String VALUE_THEME_LIGHT = "light";
+    public final static String VALUE_THEME_DARK = "dark";
+    public final static String KEY_SORT = "sort";
+    public final static String VALUE_SORT_NAME = "name";
+    public final static String VALUE_SORT_PACKAGE = "package";
+    public final static String VALUE_SORT_BLOCKED = "blocked";
 
     // Xposed Mod Pref
     public final static String KEY_MODE = "mode";
     public final static String VALUE_MODE_AUTO = "auto";
     public final static String VALUE_MODE_BLACKLIST = "blacklist";
     public final static String VALUE_MODE_WHITELIST = "whitelist";
+
+    // User-defined ad-view class prefixes (newline separated, added in Settings)
+    public final static String KEY_USER_BLOCK_PREFIXES = "user_block_prefixes";
 
     // Fragment Name
     public final static String FRG_MAIN = "main_fragment";

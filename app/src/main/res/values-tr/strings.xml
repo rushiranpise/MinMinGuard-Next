@@ -61,4 +61,30 @@
 
     <string name="nav_title">Menü</string>
     <string name="option_enable_url_filter">URL filtrelemeyi etkinleştir</string>
+
+    <string name="setting_theme">Tema</string>
+    <string name="setting_theme_system">Sistem varsayılanı</string>
+    <string name="setting_theme_light">Açık</string>
+    <string name="setting_theme_dark">Koyu</string>
+    <string name="setting_sort">Uygulamaları sırala</string>
+    <string name="setting_sort_name">Uygulama adı</string>
+    <string name="setting_sort_package">Paket adı</string>
+    <string name="setting_sort_blocked">Engellenen reklamlar</string>
+    <string name="setting_export_config">Yapılandırmayı dışa aktar</string>
+    <string name="setting_import_config">Yapılandırmayı içe aktar</string>
+    <string name="setting_user_prefixes">Özel reklam sınıfı önekleri</string>
+    <string name="msg_config_exported">Yapılandırma dışa aktarıldı</string>
+    <string name="msg_config_imported">Yapılandırma içe aktarıldı</string>
+    <string name="msg_config_import_failed">İçe aktarma başarısız: geçersiz dosya</string>
+
+    <string name="batch_select_all">Tümünü seç</string>
+    <string name="batch_deselect_all">Tüm seçimi kaldır</string>
+    <string name="batch_enable">Etkinleştir</string>
+    <string name="batch_disable">Devre dışı bırak</string>
+    <string name="batch_cancel">İptal</string>
+
+    <string name="action_statistics">İstatistikler</string>
+    <string name="stats_total_blocked">Toplam engellenen reklam</string>
+    <string name="stats_top_apps">En çok engelleyen uygulamalar</string>
+    <string name="stats_top_networks">En çok engellenen reklam ağları</string>
 </resources>

@@ -31,8 +31,23 @@
                 android:configChanges="keyboardHidden|orientation|screenSize|uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Launcher entry point. Kept separate from MainActivity so the
+             "Show launcher icon" setting can disable this component alone,
+             hiding the icon without breaking LSPosed module settings. -->
+        <activity
+                android:name=".ui.LauncherAliasActivity"
+                android:label="@string/app_name"
+                android:exported="true"
+                android:excludeFromRecents="true"
+                android:noHistory="true"
+                android:theme="@style/FullscreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 

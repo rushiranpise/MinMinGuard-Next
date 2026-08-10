@@ -7,9 +7,9 @@ android {
 
     signingConfigs {
         release {
-            keyAlias 'minminguard'
+            keyAlias System.getenv("KEY_ALIAS") ?: 'minminguard'
             keyPassword System.getenv("KEYSTORE_PASS")
-            storeFile file('minminguard.keystore')
+            storeFile file(System.getenv("KEYSTORE_FILE") ?: 'minminguard.keystore')
             storePassword System.getenv("KEY_PASS")
         }
         debug {
@@ -33,7 +33,12 @@ android {
     buildTypes {
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            // signingConfig signingConfigs.release
+            /* Sign with the real release key when the signing secrets are present
+               (set in CI); otherwise produce an unsigned APK that CI signs with
+               uber-apk-signer, matching the historical flow. */
+            if (System.getenv("KEYSTORE_PASS") != null && System.getenv("KEY_PASS") != null) {
+                signingConfig signingConfigs.release
+            }
         }
         debug {
             debuggable true

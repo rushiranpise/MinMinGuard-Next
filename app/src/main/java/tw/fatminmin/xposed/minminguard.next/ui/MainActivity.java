@@ -19,6 +19,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.SystemBarStyle;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -42,6 +43,7 @@ import tw.fatminmin.xposed.minminguard.next.PrefFileManager;
 import tw.fatminmin.xposed.minminguard.next.R;
 import tw.fatminmin.xposed.minminguard.next.ui.adapter.ModeFragmentAdapter;
 import tw.fatminmin.xposed.minminguard.next.ui.dialog.SettingsDialogFragment;
+import tw.fatminmin.xposed.minminguard.next.ui.dialog.StatsDialogFragment;
 import tw.fatminmin.xposed.minminguard.next.ui.fragments.MainFragment;
 import tw.fatminmin.xposed.minminguard.next.ui.models.AppDetails;
 
@@ -66,6 +68,9 @@ public class MainActivity extends AppCompatActivity
             {
                 case R.id.action_settings:
                     SettingsDialogFragment.newInstance().show(getSupportFragmentManager(), "dialog");
+                    break;
+                case R.id.action_statistics:
+                    StatsDialogFragment.newInstance().show(getSupportFragmentManager(), "stats");
                     break;
                 case R.id.action_tutorial:
                     showIntro();
@@ -115,6 +120,23 @@ public class MainActivity extends AppCompatActivity
         /* Android 15+ (and mandatory for targetSdk 35+/36) edge-to-edge. The dark
            style keeps light status bar icons on top of the black action bar. */
         EdgeToEdge.enable(this, SystemBarStyle.dark(Color.TRANSPARENT));
+
+        /* User theme override (system / light / dark). Must happen before
+           super.onCreate so the activity inflates with the right theme. */
+        String theme = getSharedPreferences(Common.UI_PREFS, Common.getPrefMode())
+                .getString(Common.KEY_THEME, Common.VALUE_THEME_SYSTEM);
+        if (Common.VALUE_THEME_LIGHT.equals(theme))
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        else if (Common.VALUE_THEME_DARK.equals(theme))
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        else
+        {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
 
         super.onCreate(savedInstanceState);
         prefFileManager.fixFolderPermissionsAsync();
@@ -181,8 +203,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onPageSelected(int position)
             {
-                MainFragment fragment = (MainFragment) mAdapter.getItem(position);
-                if (fragment.isAlive)
+                MainFragment fragment = getFragmentAt(position);
+                if (fragment != null && fragment.isAlive)
                 {
                     fragment.refreshUI();
                 }
@@ -315,7 +337,30 @@ public class MainActivity extends AppCompatActivity
 
     private MainFragment getCurrentFragment()
     {
+        /* After an activity recreate (theme change / rotation) the pager
+           adapter's pre-created instances are NOT the fragments actually
+           attached to the FragmentManager - the manager restores its own
+           instances with the standard ViewPager tag. Resolve the attached
+           fragment, otherwise refresh() would hit a phantom fragment with
+           no view/adapter and the app list would never load. */
+        androidx.fragment.app.Fragment f = getSupportFragmentManager().findFragmentByTag(
+                "android:switcher:" + R.id.viewpager + ":" + mViewPager.getCurrentItem());
+        if (f instanceof MainFragment)
+        {
+            return (MainFragment) f;
+        }
         return (MainFragment) mAdapter.getItem(mViewPager.getCurrentItem());
+    }
+
+    private MainFragment getFragmentAt(int position)
+    {
+        androidx.fragment.app.Fragment f = getSupportFragmentManager().findFragmentByTag(
+                "android:switcher:" + R.id.viewpager + ":" + position);
+        if (f instanceof MainFragment)
+        {
+            return (MainFragment) f;
+        }
+        return (MainFragment) mAdapter.getItem(position);
     }
 
     private void showIntro()
@@ -359,6 +404,7 @@ public class MainActivity extends AppCompatActivity
     {
 
         boolean showSystemApps = uiPref.getBoolean(Common.KEY_SHOW_SYSTEM_APPS, false);
+        String sortKey = uiPref.getString(Common.KEY_SORT, Common.VALUE_SORT_NAME);
         ArrayList<AppDetails> temp = new ArrayList<>();
 
         for (PackageInfo info : pm.getInstalledPackages(0))
@@ -379,14 +425,60 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        Collections.sort(temp, new Comparator<AppDetails>()
+        if (Common.VALUE_SORT_PACKAGE.equals(sortKey))
         {
-            @Override
-            public int compare(AppDetails l, AppDetails r)
+            Collections.sort(temp, new Comparator<AppDetails>()
             {
-                return l.getName().compareToIgnoreCase(r.getName());
+                @Override
+                public int compare(AppDetails l, AppDetails r)
+                {
+                    return l.getPackageName().compareToIgnoreCase(r.getPackageName());
+                }
+            });
+        }
+        else if (Common.VALUE_SORT_BLOCKED.equals(sortKey))
+        {
+            /* Read the block counts from the provider DB (same data the
+               adapter shows) so the list can be sorted by most-blocked. */
+            final java.util.Map<String, Integer> blockCounts = new java.util.HashMap<>();
+            try
+            {
+                tw.fatminmin.xposed.minminguard.next.orm.DaoMaster.DevOpenHelper helper =
+                        new tw.fatminmin.xposed.minminguard.next.orm.DaoMaster.DevOpenHelper(this, "mmg", null);
+                tw.fatminmin.xposed.minminguard.next.orm.DaoSession session =
+                        new tw.fatminmin.xposed.minminguard.next.orm.DaoMaster(helper.getWritableDatabase()).newSession();
+                for (tw.fatminmin.xposed.minminguard.next.orm.AppData data : session.getAppDataDao().loadAll())
+                {
+                    blockCounts.put(data.getPkgName(), data.getBlockNum());
+                }
+                helper.close();
             }
-        });
+            catch (Exception ignored)
+            {
+            }
+            Collections.sort(temp, new Comparator<AppDetails>()
+            {
+                @Override
+                public int compare(AppDetails l, AppDetails r)
+                {
+                    int lc = blockCounts.containsKey(l.getPackageName()) ? blockCounts.get(l.getPackageName()) : 0;
+                    int rc = blockCounts.containsKey(r.getPackageName()) ? blockCounts.get(r.getPackageName()) : 0;
+                    int byBlocked = Integer.compare(rc, lc);
+                    return byBlocked != 0 ? byBlocked : l.getName().compareToIgnoreCase(r.getName());
+                }
+            });
+        }
+        else
+        {
+            Collections.sort(temp, new Comparator<AppDetails>()
+            {
+                @Override
+                public int compare(AppDetails l, AppDetails r)
+                {
+                    return l.getName().compareToIgnoreCase(r.getName());
+                }
+            });
+        }
 
         masterAppList = temp;
     }
@@ -410,9 +502,11 @@ public class MainActivity extends AppCompatActivity
     {
         filteredAppList.clear();
 
+        String kw = keyword.toLowerCase();
         for (AppDetails info : masterAppList)
         {
-            if (info.getName().toLowerCase().contains(keyword.toLowerCase()))
+            if (info.getName().toLowerCase().contains(kw)
+                    || info.getPackageName().toLowerCase().contains(kw))
             {
                 filteredAppList.add(info);
             }

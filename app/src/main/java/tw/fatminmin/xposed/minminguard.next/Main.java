@@ -22,6 +22,7 @@ import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
+import tw.fatminmin.xposed.minminguard.next.blocker.ActivityBlocking;
 import tw.fatminmin.xposed.minminguard.next.blocker.ApiBlocking;
 import tw.fatminmin.xposed.minminguard.next.blocker.Blocker;
 import tw.fatminmin.xposed.minminguard.next.blocker.NameBlocking;
@@ -65,6 +66,10 @@ import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.MobFox;
 import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.Mobclix;
 import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.Nend;
 import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.Og;
+import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.Pangle;
+import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.TencentGDT;
+import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.Mintegral;
+import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.Tapjoy;
 import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.Onelouder;
 import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.OpenX;
 import tw.fatminmin.xposed.minminguard.next.blocker.adnetwork.SmartAdserver;
@@ -101,6 +106,8 @@ public class Main implements IXposedHookZygoteInit, IXposedHookLoadPackage
             new Freewheel(), new Flurry(), new GoogleGmsDoubleClick(), new Hodo(), new Inmobi(), new Intowow(), new Ironsource(), new KuAd(), new mAdserve(), new Madvertise(),
             new MasAd(), new MdotM(), new Millennial(), new Mobclix(), new MobFox(), new MoPub(), new Nend(), new Og(), new Onelouder(), new OpenX(), new SmartAdserver(), new SourcekitMRAID(),
             new Startapp(), new Tapfortap(), new TWMads(), new UnityAds(), new Vpadn(), new Vpon(), new Vungle(), new Waystorm(), new Yandex(),
+            /* Modern SDKs */
+            new Pangle(), new Mintegral(), new Tapjoy(), new TencentGDT(),
             /* Custom Mod*/
     };
 
@@ -275,6 +282,9 @@ public class Main implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
                     // Name based blocking
                     NameBlocking.nameBasedBlocking(packageName, lpparam);
+
+                    // Full-screen interstitial / rewarded activity killer
+                    ActivityBlocking.blockInterstitialActivities(packageName, lpparam);
 
                     // url filtering
                     if (pref.getBoolean(packageName + "_url", false))

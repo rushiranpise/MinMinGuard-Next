@@ -2,7 +2,9 @@ package tw.fatminmin.xposed.minminguard.next.ui.adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +50,99 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
     private ArrayList<AppDetails> appList;
     private Map<String, AppData> mAppDataMap; // retrieved AppData from sqlite
     private MainFragment.FragmentMode mMode;
+    private final java.util.Set<String> mSelected = new java.util.HashSet<>();
+    private boolean mSelectionMode;
+    private OnSelectionChangedListener mSelectionListener;
+
+    public interface OnSelectionChangedListener
+    {
+        void onSelectionChanged(int count);
+    }
+
+    public interface OnSelectionModeListener
+    {
+        void onSelectionModeRequested();
+    }
+
+    private OnSelectionModeListener mModeListener;
+
+    public void setOnSelectionModeListener(OnSelectionModeListener listener)
+    {
+        mModeListener = listener;
+    }
+
+    public void setOnSelectionChangedListener(OnSelectionChangedListener listener)
+    {
+        mSelectionListener = listener;
+    }
+
+    public boolean isSelectionMode()
+    {
+        return mSelectionMode;
+    }
+
+    public void setSelectionMode(boolean enabled)
+    {
+        mSelectionMode = enabled;
+        if (!enabled)
+        {
+            mSelected.clear();
+        }
+        notifyDataSetChanged();
+    }
+
+    public void toggleSelection(String pkgName)
+    {
+        if (!mSelectionMode)
+        {
+            return;
+        }
+        if (!mSelected.remove(pkgName))
+        {
+            mSelected.add(pkgName);
+        }
+        notifyDataSetChanged();
+        if (mSelectionListener != null)
+        {
+            mSelectionListener.onSelectionChanged(mSelected.size());
+        }
+    }
+
+    /** Selects everything, or clears the selection when all are already selected. */
+    public void toggleSelectAll()
+    {
+        if (appList.isEmpty())
+        {
+            return;
+        }
+        if (mSelected.size() == appList.size())
+        {
+            mSelected.clear();
+        }
+        else
+        {
+            mSelected.clear();
+            for (AppDetails info : appList)
+            {
+                mSelected.add(info.getPackageName());
+            }
+        }
+        notifyDataSetChanged();
+        if (mSelectionListener != null)
+        {
+            mSelectionListener.onSelectionChanged(mSelected.size());
+        }
+    }
+
+    public java.util.List<String> getSelectedPackages()
+    {
+        return new ArrayList<>(mSelected);
+    }
+
+    public int getSelectedCount()
+    {
+        return mSelected.size();
+    }
 
     public AppsAdapter(Context context, ArrayList<AppDetails> list, MainFragment.FragmentMode mode)
     {
@@ -137,6 +232,22 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
             holder.txtBlockNum.setText("");
         }
 
+        boolean selected = mSelected.contains(currentAppDetails.getPackageName());
+        holder.card.setActivated(selected);
+        holder.card.setSelected(selected);
+        if (mSelectionMode)
+        {
+            int base = selected
+                    ? resolveColor(com.google.android.material.R.attr.colorSecondaryContainer)
+                    : resolveColor(com.google.android.material.R.attr.colorSurfaceContainerLow);
+            holder.card.setCardBackgroundColor(base);
+        }
+        else
+        {
+            holder.card.setCardBackgroundColor(
+                    ColorStateList.valueOf(resolveColor(com.google.android.material.R.attr.colorSurfaceContainerLow)));
+        }
+
         currentAppDetails.loadIcon(holder.imgAppIcon);
         holder.txtAppName.setText(currentAppDetails.getName());
 
@@ -165,9 +276,36 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
             @Override
             public void onClick(View v)
             {
+                if (mSelectionMode)
+                {
+                    toggleSelection(currentAppDetails.getPackageName());
+                    return;
+                }
                 DialogFragment dialog = AppDetailDialogFragment.newInstance(currentAppDetails.getName(), currentAppDetails.getPackageName(), appData);
                 AppCompatActivity activity = (AppCompatActivity) mContext;
                 dialog.show(activity.getSupportFragmentManager(), "dialog");
+            }
+        });
+
+        holder.card.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View v)
+            {
+                if (!mSelectionMode && mMode != MainFragment.FragmentMode.AUTO)
+                {
+                    if (mModeListener != null)
+                    {
+                        mModeListener.onSelectionModeRequested();
+                    }
+                    setSelectionMode(true);
+                    toggleSelection(currentAppDetails.getPackageName());
+                    if (mSelectionListener != null)
+                    {
+                        mSelectionListener.onSelectionChanged(1);
+                    }
+                }
+                return true;
             }
         });
 
@@ -181,6 +319,16 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
         });
     }
 
+    private int resolveColor(int attr)
+    {
+        TypedValue tv = new TypedValue();
+        if (mContext.getTheme().resolveAttribute(attr, tv, true))
+        {
+            return tv.data;
+        }
+        return 0xFFFFFFFF;
+    }
+
     @Override
     public int getItemCount()
     {
@@ -190,7 +338,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
 
-        View card;
+        com.google.android.material.card.MaterialCardView card;
         ImageView imgAppIcon;
         TextView txtAppName;
         TextView txtBlockNum;
@@ -200,7 +348,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
         {
             super(v);
 
-            card = v;
+            card = (com.google.android.material.card.MaterialCardView) v;
             imgAppIcon = v.findViewById(R.id.img_app_icon);
             txtAppName = v.findViewById(R.id.txt_app_name);
             txtBlockNum = v.findViewById(R.id.txt_block_num);
