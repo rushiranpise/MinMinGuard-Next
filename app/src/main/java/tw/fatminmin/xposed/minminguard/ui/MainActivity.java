@@ -207,13 +207,17 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
-        /* Keep the content above the system navigation bar (edge-to-edge). */
+        /* Keep the content above the system bars (edge-to-edge).
+           The DrawerLayout has fitsSystemWindows="true" so the NavigationView
+           drawer draws behind the status bar; the main content (SwipeRefreshLayout)
+           gets padded from both the status bar and the navigation bar. */
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {
-            int bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+            androidx.core.graphics.Insets bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+            );
             View content = findViewById(R.id.swipeRefresh);
-            if (content != null)
-            {
-                content.setPadding(0, 0, 0, bottom);
+            if (content != null) {
+                content.setPadding(0, bars.top, 0, bars.bottom);
             }
             return insets;
         });
