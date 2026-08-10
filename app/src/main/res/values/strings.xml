@@ -92,7 +92,7 @@
     <string name="batch_deselect_all">Deselect all</string>
     <string name="batch_enable">Enable</string>
     <string name="batch_disable">Disable</string>
-    <string name="batch_cancel">Cancel</string>
+    <string name="batch_close">Close</string>
     <string name="batch_selected">%1$d selected</string>
     <string name="msg_batch_done">Updated %1$d apps</string>
 

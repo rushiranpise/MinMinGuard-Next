@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.checkbox.MaterialCheckBox;
@@ -184,11 +183,12 @@ public class SettingsDialogFragment extends DialogFragment
 
     private void applyTheme(String value)
     {
-        int mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-        if (Common.VALUE_THEME_LIGHT.equals(value)) mode = AppCompatDelegate.MODE_NIGHT_NO;
-        else if (Common.VALUE_THEME_DARK.equals(value)) mode = AppCompatDelegate.MODE_NIGHT_YES;
-        AppCompatDelegate.setDefaultNightMode(mode);
-        requireActivity().recreate();
+        /* The activity applies the saved theme itself via setTheme() in
+           onCreate (AppTheme / AppThemeDark - two explicit themes, no night
+           mode machinery). This just persists the choice and recreates, so the
+           recreated activity is always themed correctly on the first try. */
+        mUiPref.edit().putString(Common.KEY_THEME, value).apply();
+        requireActivity().getWindow().getDecorView().post(() -> requireActivity().recreate());
     }
 
     private void showSortDialog()

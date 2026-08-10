@@ -19,7 +19,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.activity.SystemBarStyle;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -117,25 +116,31 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        /* Android 15+ (and mandatory for targetSdk 35+/36) edge-to-edge. The dark
-           style keeps light status bar icons on top of the black action bar. */
-        EdgeToEdge.enable(this, SystemBarStyle.dark(Color.TRANSPARENT));
-
-        /* User theme override (system / light / dark). Must happen before
-           super.onCreate so the activity inflates with the right theme. */
+        /* Deterministic theme selection. The saved pref maps 1:1 to one of two
+           EXPLICIT Material 3 themes (AppTheme = light palette, AppThemeDark =
+           dark palette) via setTheme(). There is no AppCompat night-mode
+           machinery and no night-qualified resource variants, so nothing can go
+           stale or half-apply: every recreate - including right after a theme
+           switch - inflates with the exact theme chosen here. "System" is
+           resolved against the real device state by Common.isDarkTheme(). */
         String theme = getSharedPreferences(Common.UI_PREFS, Common.getPrefMode())
                 .getString(Common.KEY_THEME, Common.VALUE_THEME_SYSTEM);
-        if (Common.VALUE_THEME_LIGHT.equals(theme))
+        boolean darkTheme = Common.isDarkTheme(theme);
+        setTheme(darkTheme ? R.style.AppThemeDark : R.style.AppTheme);
+
+        /* Android 15+ (and mandatory for targetSdk 35+/36) edge-to-edge.
+           The status/nav bar icon color is chosen from the SAME resolved theme
+           (dark theme -> light icons, light theme -> dark icons), so it can
+           never disagree with the applied palette - including right after a
+           theme switch. SystemBarStyle.auto is NOT used because it evaluates
+           the device configuration, which may differ from the forced theme. */
+        if (darkTheme)
         {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-        else if (Common.VALUE_THEME_DARK.equals(theme))
-        {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            EdgeToEdge.enable(this, SystemBarStyle.dark(Color.TRANSPARENT));
         }
         else
         {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            EdgeToEdge.enable(this, SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT));
         }
 
         super.onCreate(savedInstanceState);

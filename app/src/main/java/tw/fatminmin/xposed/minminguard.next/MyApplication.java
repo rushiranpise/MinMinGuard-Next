@@ -3,8 +3,6 @@ package tw.fatminmin.xposed.minminguard.next;
 import android.app.Application;
 import android.content.SharedPreferences;
 
-import com.google.android.material.color.DynamicColors;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -19,9 +17,10 @@ public class MyApplication extends Application
     public void onCreate()
     {
         super.onCreate();
-        /* Material You: on Android 12+ the app follows the wallpaper palette;
-           on older devices it falls back to the red-tonal palette in styles.xml. */
-        DynamicColors.applyToActivitiesIfAvailable(this);
+        /* No wallpaper theming: the app always uses the red-tonal Material 3
+           palette (color.xml / values-night) so the accent stays the same in
+           light, dark, and system modes. Wallpaper colors made the accent
+           change per mode and left some surfaces half-light, half-dark. */
 
         SharedPreferences uiPref = getSharedPreferences(Common.UI_PREFS, Common.getPrefMode());
         if (uiPref.getBoolean(Common.KEY_ENABLE_CRASH_REPORT, false))

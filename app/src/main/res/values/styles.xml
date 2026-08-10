@@ -1,9 +1,11 @@
 <resources>
 
-    <!-- Material 3 base themes (NoActionBar: we use a MaterialToolbar in the layout).
-         On Android 12+ DynamicColors applies Material You wallpaper colors; below that
-         the app falls back to the red-tonal palette in color.xml / values-night. -->
-    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+    <!-- Material 3 themes. Two EXPLICIT themes (light / dark) with fixed
+         palettes, selected by the saved preference via setTheme() in
+         MainActivity. No AppCompat night-mode machinery and no night-variant
+         resources are involved, so switching themes can never leave the UI
+         half-themed or on a stale theme. -->
+    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorOnPrimary">@color/onPrimary</item>
         <item name="colorPrimaryContainer">@color/primaryContainer</item>
@@ -36,6 +38,43 @@
         <item name="colorSurfaceContainer">@color/surfaceContainer</item>
         <item name="colorSurfaceContainerHigh">@color/surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/surfaceContainerHighest</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+    <style name="AppThemeDark" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/dark_primary</item>
+        <item name="colorOnPrimary">@color/dark_onPrimary</item>
+        <item name="colorPrimaryContainer">@color/dark_primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/dark_onPrimaryContainer</item>
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorOnSecondary">@color/dark_onSecondary</item>
+        <item name="colorSecondaryContainer">@color/dark_secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/dark_onSecondaryContainer</item>
+        <item name="colorTertiary">@color/dark_tertiary</item>
+        <item name="colorOnTertiary">@color/dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/dark_tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/dark_onTertiaryContainer</item>
+        <item name="colorError">@color/dark_error</item>
+        <item name="colorOnError">@color/dark_onError</item>
+        <item name="colorErrorContainer">@color/dark_errorContainer</item>
+        <item name="colorOnErrorContainer">@color/dark_onErrorContainer</item>
+        <item name="android:colorBackground">@color/dark_background</item>
+        <item name="colorOnBackground">@color/dark_onBackground</item>
+        <item name="colorSurface">@color/dark_surface</item>
+        <item name="colorOnSurface">@color/dark_onSurface</item>
+        <item name="colorSurfaceVariant">@color/dark_surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/dark_onSurfaceVariant</item>
+        <item name="colorOutline">@color/dark_outline</item>
+        <item name="colorOutlineVariant">@color/dark_outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/dark_inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/dark_inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/dark_inversePrimary</item>
+        <item name="colorSurfaceContainerLowest">@color/dark_surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/dark_surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/dark_surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/dark_surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/dark_surfaceContainerHighest</item>
+        <item name="android:windowBackground">@color/dark_background</item>
     </style>
 
     <style name="FullscreenTheme" parent="Theme.Material3.DayNight.NoActionBar"/>

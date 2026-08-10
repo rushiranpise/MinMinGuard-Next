@@ -39,6 +39,42 @@
     <color name="surfaceContainerHigh">#F2E3E0</color>
     <color name="surfaceContainerHighest">#EDDDDA</color>
 
+    <!-- ===== Dark Material 3 color roles (red seed) - fixed values, NOT
+         selected by night configuration. The app picks light or dark palette
+         explicitly via setTheme(), so theme switching is deterministic. ===== -->
+    <color name="dark_primary">#FFB4AB</color>
+    <color name="dark_onPrimary">#690005</color>
+    <color name="dark_primaryContainer">#93000A</color>
+    <color name="dark_onPrimaryContainer">#FFDAD6</color>
+    <color name="dark_secondary">#E7BDB8</color>
+    <color name="dark_onSecondary">#442925</color>
+    <color name="dark_secondaryContainer">#5D3F3B</color>
+    <color name="dark_onSecondaryContainer">#FFDAD5</color>
+    <color name="dark_tertiary">#E4C165</color>
+    <color name="dark_onTertiary">#3D2F00</color>
+    <color name="dark_tertiaryContainer">#554500</color>
+    <color name="dark_onTertiaryContainer">#FFDF9E</color>
+    <color name="dark_error">#FFB4AB</color>
+    <color name="dark_onError">#690005</color>
+    <color name="dark_errorContainer">#93000A</color>
+    <color name="dark_onErrorContainer">#FFDAD6</color>
+    <color name="dark_background">#201A19</color>
+    <color name="dark_onBackground">#EDE0DE</color>
+    <color name="dark_surface">#201A19</color>
+    <color name="dark_onSurface">#EDE0DE</color>
+    <color name="dark_surfaceVariant">#534341</color>
+    <color name="dark_onSurfaceVariant">#D8C2BF</color>
+    <color name="dark_outline">#A08D8B</color>
+    <color name="dark_outlineVariant">#534341</color>
+    <color name="dark_inverseSurface">#EDE0DE</color>
+    <color name="dark_inverseOnSurface">#362F2E</color>
+    <color name="dark_inversePrimary">#B3261E</color>
+    <color name="dark_surfaceContainerLowest">#1A1413</color>
+    <color name="dark_surfaceContainerLow">#292221</color>
+    <color name="dark_surfaceContainer">#2D2625</color>
+    <color name="dark_surfaceContainerHigh">#38302F</color>
+    <color name="dark_surfaceContainerHighest">#433B3A</color>
+
     <!-- ===== Legacy colors (still referenced by older code / drawables) ===== -->
     <!-- grayscale -->
     <color name="white">#FFFFFF</color>

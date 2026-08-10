@@ -81,7 +81,7 @@
     <string name="batch_deselect_all">Tüm seçimi kaldır</string>
     <string name="batch_enable">Etkinleştir</string>
     <string name="batch_disable">Devre dışı bırak</string>
-    <string name="batch_cancel">İptal</string>
+    <string name="batch_close">Kapat</string>
 
     <string name="action_statistics">İstatistikler</string>
     <string name="stats_total_blocked">Toplam engellenen reklam</string>

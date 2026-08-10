@@ -1,6 +1,8 @@
 package tw.fatminmin.xposed.minminguard.next;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 
 import tw.fatminmin.xposed.minminguard.next.ui.fragments.MainFragment;
 
@@ -72,4 +74,22 @@ public class Common
     }
 
     public static Integer getPrefMode() { return Context.MODE_PRIVATE; }
+
+    /** Whether the theme preference maps to a dark uiMode.
+        "System" is resolved against the REAL device state via
+        Resources.getSystem() (never the app's own - possibly mutated -
+        configuration), so it always reports the actual system night mode. */
+    public static boolean isDarkTheme(String theme)
+    {
+        if (VALUE_THEME_LIGHT.equals(theme))
+        {
+            return false;
+        }
+        if (VALUE_THEME_DARK.equals(theme))
+        {
+            return true;
+        }
+        return (Resources.getSystem().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+    }
 }

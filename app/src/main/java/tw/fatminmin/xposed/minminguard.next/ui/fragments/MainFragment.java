@@ -3,7 +3,6 @@ package tw.fatminmin.xposed.minminguard.next.ui.fragments;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -152,7 +151,14 @@ public class MainFragment extends Fragment
         adapter.setOnSelectionModeListener(this::enterSelectionMode);
         if (mMode == FragmentMode.AUTO)
         {
+            /* selection does not apply in AUTO mode */
             mBatchBar.setVisibility(View.GONE);
+        }
+        else
+        {
+            /* visible by default so batch actions are one tap away */
+            mTxtBatchCount.setText(getString(R.string.batch_selected, 0));
+            updateSelectAllLabel(0);
         }
 
         isAlive = true;
@@ -184,16 +190,18 @@ public class MainFragment extends Fragment
         mainActivity.refresh(false);
     }
 
+    /** Clears the selection but keeps the bar visible (it is the default UI now). */
     private void exitSelectionMode()
     {
         if (adapter != null)
         {
             adapter.setSelectionMode(false);
         }
-        if (mBatchBar != null)
+        if (mTxtBatchCount != null)
         {
-            mBatchBar.setVisibility(View.GONE);
+            mTxtBatchCount.setText(getString(R.string.batch_selected, 0));
         }
+        updateSelectAllLabel(0);
     }
 
     private void enterSelectionMode()
