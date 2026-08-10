@@ -13,8 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.SwitchCompat;
 import tw.fatminmin.xposed.minminguard.Common;
 import tw.fatminmin.xposed.minminguard.R;
 import tw.fatminmin.xposed.minminguard.orm.AppData;
@@ -30,7 +31,7 @@ public class AppDetailDialogFragment extends DialogFragment
     private TextView txtPkgName;
     private TextView txtAdNetworks;
     private TextView txtAdsBlocked;
-    private Switch swtUrlFilter;
+    private SwitchCompat swtUrlFilter;
 
     private String appName;
     private String pkgName;

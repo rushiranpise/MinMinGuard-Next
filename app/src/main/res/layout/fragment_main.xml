@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -7,10 +9,12 @@
     <TextView
             android:id="@+id/txt_xposed_enable"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/red"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorErrorContainer"
             android:gravity="center"
+            android:padding="8dp"
             android:text="@string/msg_xposed_not_enabled"
+            android:textColor="?attr/colorOnErrorContainer"
             android:visibility="gone"
             tools:visibility="visible"/>
 
@@ -19,12 +23,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_xposed_enable"
-            android:background="@color/black"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textColor="@color/white"
+            android:background="?attr/colorSurfaceContainerHighest"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="12sp"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -32,15 +36,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_runtime"
+            android:paddingTop="6dp"
             android:scrollbars="vertical"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_mode"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/red"
+            android:layout_margin="16dp"
             android:text="@string/msg_mode_apply"
-            android:textSize="15sp"/>
+            android:textSize="15sp"
+            app:cornerRadius="28dp"/>
 
 </RelativeLayout>

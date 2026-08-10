@@ -4,30 +4,30 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:layout_gravity="center"
-              android:padding="15dp">
+              android:padding="16dp">
 
-    <CheckBox
+    <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/cb_enable_cr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
             android:enabled="false"
             android:text="@string/msg_enabled_crash_report"/>
-    <CheckBox
+    <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/cb_show_system_apps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="@string/msg_show_system_apps"/>
-    <CheckBox
+    <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/cb_show_debug_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="@string/msg_show_debug"/>
-    <Button
+    <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_ok"
-            android:layout_margin="10dp"
+            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_ok"/>

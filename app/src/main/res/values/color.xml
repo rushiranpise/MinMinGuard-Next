@@ -1,5 +1,42 @@
 <resources>
 
+    <!-- ===== Material 3 color roles (red seed) ===== -->
+    <color name="primary">#B3261E</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="primaryContainer">#FFDAD6</color>
+    <color name="onPrimaryContainer">#410002</color>
+    <color name="secondary">#775652</color>
+    <color name="onSecondary">#FFFFFF</color>
+    <color name="secondaryContainer">#FFDAD5</color>
+    <color name="onSecondaryContainer">#2C1512</color>
+    <color name="tertiary">#6F5B00</color>
+    <color name="onTertiary">#FFFFFF</color>
+    <color name="tertiaryContainer">#FFDF9E</color>
+    <color name="onTertiaryContainer">#221A00</color>
+    <color name="error">#BA1A1A</color>
+    <color name="onError">#FFFFFF</color>
+    <color name="errorContainer">#FFDAD6</color>
+    <color name="onErrorContainer">#410002</color>
+    <color name="background">#FFF8F7</color>
+    <color name="onBackground">#201A19</color>
+    <color name="surface">#FFF8F7</color>
+    <color name="onSurface">#201A19</color>
+    <color name="surfaceVariant">#F5DDDA</color>
+    <color name="onSurfaceVariant">#534341</color>
+    <color name="outline">#857371</color>
+    <color name="outlineVariant">#D8C2BF</color>
+    <color name="inverseSurface">#362F2E</color>
+    <color name="inverseOnSurface">#FBEEEC</color>
+    <color name="inversePrimary">#FFB4AB</color>
+    <color name="scrim">#000000</color>
+    <color name="shadow">#000000</color>
+    <color name="surfaceContainerLowest">#FFFFFF</color>
+    <color name="surfaceContainerLow">#FFF1EE</color>
+    <color name="surfaceContainer">#F8E9E6</color>
+    <color name="surfaceContainerHigh">#F2E3E0</color>
+    <color name="surfaceContainerHighest">#EDDDDA</color>
+
+    <!-- ===== Legacy colors (still referenced by older code / drawables) ===== -->
     <!-- grayscale -->
     <color name="white">#FFFFFF</color>
     <color name="gray_light">#DBDBDB</color>

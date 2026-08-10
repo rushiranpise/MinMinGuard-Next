@@ -20,6 +20,7 @@ import androidx.activity.SystemBarStyle;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuItemCompat;
@@ -137,7 +138,20 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
 
-        // actionbar setup
+        // Material 3 top app bar
+        Toolbar toolbar = findViewById(R.id.top_toolbar);
+        if (toolbar instanceof com.google.android.material.appbar.MaterialToolbar)
+        {
+            /* M3 toolbar content insets: keeps the nav button and the action
+               icons clear of the screen edges / rounded corners. The theme
+               has no Toolbar style so the defaults are not applied. */
+            com.google.android.material.appbar.MaterialToolbar mt =
+                (com.google.android.material.appbar.MaterialToolbar) toolbar;
+            int inset = (int) (16 * getResources().getDisplayMetrics().density + 0.5f);
+            mt.setContentInsetStartWithNavigation(inset);
+            mt.setContentInsetEndWithActions(inset);
+        }
+        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
         {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -209,15 +223,22 @@ public class MainActivity extends AppCompatActivity
 
         /* Keep the content above the system bars (edge-to-edge).
            The DrawerLayout has fitsSystemWindows="true" so the NavigationView
-           drawer draws behind the status bar; the main content (SwipeRefreshLayout)
-           gets padded from both the status bar and the navigation bar. */
+           drawer draws behind the status bar; the top app bar gets the status
+           bar inset and the list gets the navigation bar inset. */
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {
             androidx.core.graphics.Insets bars = insets.getInsets(
                 WindowInsetsCompat.Type.systemBars()
             );
+            /* The AppBarLayout handles the status bar inset for the toolbar;
+               we only keep the list above the navigation bar, and the toolbar
+               icons clear of display cutouts / rounded corners. */
+            View toolbar2 = findViewById(R.id.top_toolbar);
+            if (toolbar2 != null) {
+                toolbar2.setPadding(bars.left, 0, bars.right, 0);
+            }
             View content = findViewById(R.id.swipeRefresh);
             if (content != null) {
-                content.setPadding(0, bars.top, 0, bars.bottom);
+                content.setPadding(0, 0, 0, bars.bottom);
             }
             return insets;
         });

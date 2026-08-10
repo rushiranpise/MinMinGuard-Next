@@ -1,32 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="150dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/black">
+<?xml version="1.0" encoding="utf-8"?>    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="?attr/colorSurfaceContainerHigh"
+                  android:gravity="bottom"
+                  android:orientation="horizontal"
+                  android:paddingStart="16dp"
+                  android:paddingEnd="16dp"
+                  android:paddingBottom="16dp"
+                  android:paddingTop="48dp">
 
-    <LinearLayout
+    <ImageView
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:contentDescription="Navigation header icon"
+            android:src="@mipmap/ic_launcher"/>
+
+    <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="10dp"
-            android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:text="@string/nav_title"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="18sp"/>
 
-        <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@mipmap/ic_launcher"
-            android:contentDescription="Navigation header icon" />
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="10dp"
-                android:text="@string/nav_title"
-                android:textColor="@color/white"
-                android:textSize="18sp"/>
-
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

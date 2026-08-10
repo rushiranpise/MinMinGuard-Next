@@ -1,0 +1,39 @@
+<resources>
+
+    <!-- ===== Material 3 color roles (red seed, dark) ===== -->
+    <color name="primary">#FFB4AB</color>
+    <color name="onPrimary">#690005</color>
+    <color name="primaryContainer">#93000A</color>
+    <color name="onPrimaryContainer">#FFDAD6</color>
+    <color name="secondary">#E7BDB8</color>
+    <color name="onSecondary">#442925</color>
+    <color name="secondaryContainer">#5D3F3B</color>
+    <color name="onSecondaryContainer">#FFDAD5</color>
+    <color name="tertiary">#E4C165</color>
+    <color name="onTertiary">#3D2F00</color>
+    <color name="tertiaryContainer">#554500</color>
+    <color name="onTertiaryContainer">#FFDF9E</color>
+    <color name="error">#FFB4AB</color>
+    <color name="onError">#690005</color>
+    <color name="errorContainer">#93000A</color>
+    <color name="onErrorContainer">#FFDAD6</color>
+    <color name="background">#201A19</color>
+    <color name="onBackground">#EDE0DE</color>
+    <color name="surface">#201A19</color>
+    <color name="onSurface">#EDE0DE</color>
+    <color name="surfaceVariant">#534341</color>
+    <color name="onSurfaceVariant">#D8C2BF</color>
+    <color name="outline">#A08D8B</color>
+    <color name="outlineVariant">#534341</color>
+    <color name="inverseSurface">#EDE0DE</color>
+    <color name="inverseOnSurface">#362F2E</color>
+    <color name="inversePrimary">#B3261E</color>
+    <color name="scrim">#000000</color>
+    <color name="shadow">#000000</color>
+    <color name="surfaceContainerLowest">#1A1413</color>
+    <color name="surfaceContainerLow">#292221</color>
+    <color name="surfaceContainer">#2D2625</color>
+    <color name="surfaceContainerHigh">#38302F</color>
+    <color name="surfaceContainerHighest">#433B3A</color>
+
+</resources>

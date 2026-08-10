@@ -7,8 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.SwitchCompat;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -154,7 +155,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
             @Override
             public void onClick(View v)
             {
-                Switch sw = (Switch) v;
+                SwitchCompat sw = (SwitchCompat) v;
                 setState(currentAppDetails.getPackageName(), sw.isChecked());
             }
         });
@@ -193,7 +194,7 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
         ImageView imgAppIcon;
         TextView txtAppName;
         TextView txtBlockNum;
-        Switch switchEnable;
+        SwitchCompat switchEnable;
 
         ViewHolder(View v)
         {

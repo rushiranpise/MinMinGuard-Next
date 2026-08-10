@@ -1,8 +1,8 @@
 package tw.fatminmin.xposed.minminguard;
 
 import android.app.Application;
-//import com.crashlytics.android.Crashlytics;
-//import io.fabric.sdk.android.Fabric;
+
+import com.google.android.material.color.DynamicColors;
 
 /**
  * Created by fatminmin on 2015/10/3.
@@ -13,6 +13,8 @@ public class MyApplication extends Application
     public void onCreate()
     {
         super.onCreate();
-//        Fabric.with(this, new Crashlytics()); // Deprecated by defkev on 2022/5/10 -> Crashlytics is EOL since ~2019, migrate to Firebase???
+        /* Material You: on Android 12+ the app follows the wallpaper palette;
+           on older devices it falls back to the red-tonal palette in styles.xml. */
+        DynamicColors.applyToActivitiesIfAvailable(this);
     }
 }

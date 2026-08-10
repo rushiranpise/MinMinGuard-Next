@@ -1,53 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardElevation="0dp">
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginVertical="6dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:rippleColor="?attr/colorControlHighlight"
+        app:strokeWidth="1dp"
+        app:strokeColor="?attr/colorOutlineVariant">
 
-    <RelativeLayout
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="5dp">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
 
         <ImageView
                 android:id="@+id/img_app_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                tools:src="@drawable/icon"
-            android:contentDescription="Card app icon" />
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:contentDescription="Card app icon"
+                tools:src="@drawable/icon"/>
 
-        <TextView
-                android:id="@+id/txt_app_name"
-                android:textSize="17sp"
-                android:layout_toRightOf="@+id/img_app_icon"
-                android:layout_width="wrap_content"
+        <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginBottom="1dp"
-                tools:text="MinMinGuard"/>
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-        <TextView
-                android:id="@+id/txt_block_num"
-                android:textColor="@color/red"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_app_name"
-                android:layout_alignLeft="@+id/txt_app_name"
-                tools:text="@string/msg_block_num"/>
+            <TextView
+                    android:id="@+id/txt_app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="MinMinGuard"/>
 
-        <Switch
+            <TextView
+                    android:id="@+id/txt_block_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="13sp"
+                    tools:text="@string/msg_block_num"/>
+
+        </LinearLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/switch_enable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"/>
+                android:layout_marginStart="8dp"/>
 
+    </LinearLayout>
 
-    </RelativeLayout>
-
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
