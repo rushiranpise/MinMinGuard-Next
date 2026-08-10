@@ -1,17 +1,10 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in /home/fatminmin/Android/Sdk/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Xposed module entry points are referenced from assets/xposed_init and by name
+# from the framework - never rename or strip them.
+-keep class tw.fatminmin.xposed.minminguard.Main { *; }
+-keep class tw.fatminmin.xposed.minminguard.blocker.Util { *; }
+-keep class tw.fatminmin.xposed.minminguard.Common { *; }
+-keep class tw.fatminmin.xposed.minminguard.FrameworkInfo { *; }
+-keep class tw.fatminmin.xposed.minminguard.blocker.Blocker { *; }
+-keep class tw.fatminmin.xposed.minminguard.blocker.adnetwork.** { *; }
+-keep class tw.fatminmin.xposed.minminguard.blocker.custom_mod.** { *; }
 
-# Add any project specific keep options here:
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}

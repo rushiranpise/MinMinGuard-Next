@@ -1,1 +1,22 @@
-include ':app', ':generator'
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+rootProject.name = "MinMinGuard"
+
+// The :generator module is a greenDAO 2.x code generator that is no longer
+// needed - the generated DAO classes are checked in under app/src/main.
+include ':app'

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import tw.fatminmin.xposed.minminguard.Common;
+import tw.fatminmin.xposed.minminguard.FrameworkInfo;
 import tw.fatminmin.xposed.minminguard.R;
 import tw.fatminmin.xposed.minminguard.blocker.Util;
 import tw.fatminmin.xposed.minminguard.ui.MainActivity;
@@ -86,6 +87,7 @@ public class MainFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         TextView mTxtXposedEnabled = view.findViewById(R.id.txt_xposed_enable);
+        TextView mTxtRuntime = view.findViewById(R.id.txt_runtime);
         mBtnMode = view.findViewById(R.id.btn_mode);
 
         RecyclerView mRecyclerView = view.findViewById(R.id.recycler_view);
@@ -94,6 +96,8 @@ public class MainFragment extends Fragment
         {
             mTxtXposedEnabled.setVisibility(View.VISIBLE);
         }
+
+        mTxtRuntime.setText(FrameworkInfo.describe(getActivity()));
 
         /* setup apply button */
         mBtnMode.setOnClickListener(btnModeClick);

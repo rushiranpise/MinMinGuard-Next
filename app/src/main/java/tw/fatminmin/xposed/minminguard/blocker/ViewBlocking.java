@@ -1,10 +1,9 @@
 package tw.fatminmin.xposed.minminguard.blocker;
 
+import android.content.Context;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
-import tw.fatminmin.xposed.minminguard.Main;
 
 public class ViewBlocking
 {
@@ -16,7 +15,7 @@ public class ViewBlocking
 
     private static void removeAdView(final String packageName, final View view, final boolean first, final float heightLimit)
     {
-        float adHeight = convertPixelsToDp(view.getHeight());
+        float adHeight = convertPixelsToDp(view.getContext(), view.getHeight());
 
         if (first || (adHeight > 0 && adHeight <= heightLimit))
         {
@@ -36,7 +35,7 @@ public class ViewBlocking
             @Override
             public void run()
             {
-                float adHeight = convertPixelsToDp(view.getHeight());
+                float adHeight = convertPixelsToDp(view.getContext(), view.getHeight());
 
                 if (first || (adHeight > 0 && adHeight <= heightLimit))
                 {
@@ -60,13 +59,13 @@ public class ViewBlocking
         }
     }
 
-    private static DisplayMetrics metrics = new DisplayMetrics();;
-
-    private static float convertPixelsToDp(float px)
+    private static float convertPixelsToDp(Context context, float px)
     {
-        if(Main.resources != null)
-            metrics = Main.resources.getDisplayMetrics();
+        if (context == null)
+            return 0;
 
-        return px / (metrics.densityDpi / 160f);
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+
+        return px / metrics.density;
     }
 }

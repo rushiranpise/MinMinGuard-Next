@@ -62,4 +62,5 @@
 
     <string name="nav_title">Menu</string>
     <string name="option_enable_url_filter">Enable url filtering</string>
+    <string name="msg_runtime">Framework: %1$s   |   Root: %2$s</string>
 </resources>

@@ -2,6 +2,7 @@ package tw.fatminmin.xposed.minminguard.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -9,16 +10,21 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.view.View;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.activity.EdgeToEdge;
+import androidx.activity.SystemBarStyle;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.MenuItemCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
@@ -105,6 +111,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        /* Android 15+ (and mandatory for targetSdk 35+/36) edge-to-edge. The dark
+           style keeps light status bar icons on top of the black action bar. */
+        EdgeToEdge.enable(this, SystemBarStyle.dark(Color.TRANSPARENT));
+
         super.onCreate(savedInstanceState);
         prefFileManager.fixFolderPermissionsAsync();
 
@@ -196,6 +206,17 @@ public class MainActivity extends AppCompatActivity
             default:
                 break;
         }
+
+        /* Keep the content above the system navigation bar (edge-to-edge). */
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {
+            int bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+            View content = findViewById(R.id.swipeRefresh);
+            if (content != null)
+            {
+                content.setPadding(0, 0, 0, bottom);
+            }
+            return insets;
+        });
 
         masterAppList = new ArrayList<>();
         filteredAppList = new ArrayList<>();

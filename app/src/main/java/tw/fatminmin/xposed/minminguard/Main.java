@@ -2,16 +2,17 @@ package tw.fatminmin.xposed.minminguard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.content.res.XModuleResources;
 import android.os.Build;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
+import java.util.zip.ZipFile;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -86,11 +87,12 @@ import tw.fatminmin.xposed.minminguard.blocker.custom_mod._2chMate;
 public class Main implements IXposedHookZygoteInit, IXposedHookLoadPackage
 {
     private static final String MY_PACKAGE_NAME = Main.class.getPackage().getName();
+    private static final String QUERY_ALL_PACKAGES = "android.permission.QUERY_ALL_PACKAGES";
+
     private static String MODULE_PATH;
     public static Set<String> patterns = new HashSet<>();
-    public static Resources resources;
     public static Integer xposedVersionCode;
-    private SharedPreferences pref;
+    private static SharedPreferences pref;
 
     public static Blocker[] blockers = {
             /* Popular adnetwork */
@@ -136,17 +138,19 @@ public class Main implements IXposedHookZygoteInit, IXposedHookLoadPackage
         {
             xposedVersionCode = XposedBridge.getXposedVersion();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             xposedVersionCode = XposedBridge.XPOSED_BRIDGE_VERSION;
         }
 
         MODULE_PATH = startupParam.modulePath;
 
-        if(xposedVersionCode < 90)
-            UnpackResources();
-        else
-            Util.log(MY_PACKAGE_NAME, "Skipping resource unpacking for now");
+        /* Load the host / url-filtering pattern lists from our own APK.
+           The original code used XModuleResources which only works on legacy
+           Xposed (< API 90); on LSPosed / Vector the pattern lists were never
+           loaded, silently disabling URL filtering. Reading the assets straight
+           from the module APK works on every framework. */
+        UnpackResources();
 
         Util.notifyWorker = Executors.newSingleThreadExecutor();
 
@@ -169,22 +173,40 @@ public class Main implements IXposedHookZygoteInit, IXposedHookLoadPackage
     {
         try
         {
-            resources = XModuleResources.createInstance(MODULE_PATH, null);
-            byte[] array = XposedHelpers.assetAsByteArray(resources, "host/output_file");
-            String decoded = new String(array);
-            String[] sUrls = decoded.split("\n");
-
-            Collections.addAll(patterns, sUrls);
-
-            array = XposedHelpers.assetAsByteArray(resources, "host/mmg_pattern");
-            decoded = new String(array);
-            sUrls = decoded.split("\n");
-
-            Collections.addAll(patterns, sUrls);
+            addPatternsFromAsset("host/output_file");
+            addPatternsFromAsset("host/mmg_pattern");
         }
         catch (Exception e)
         {
+            Util.log(MY_PACKAGE_NAME, "Failed to load pattern lists: " + e);
+        }
+    }
 
+    private void addPatternsFromAsset(String assetPath)
+    {
+        try (ZipFile zip = new ZipFile(new File(MODULE_PATH)))
+        {
+            InputStream in = zip.getInputStream(zip.getEntry("assets/" + assetPath));
+            if (in != null)
+            {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                byte[] buf = new byte[4096];
+                int n;
+                while ((n = in.read(buf)) != -1)
+                {
+                    bos.write(buf, 0, n);
+                }
+                in.close();
+
+                String decoded = new String(bos.toByteArray(), "UTF-8");
+                String[] sUrls = decoded.split("\n");
+                Collections.addAll(patterns, sUrls);
+                Util.log(MY_PACKAGE_NAME, "Loaded " + sUrls.length + " patterns from " + assetPath);
+            }
+        }
+        catch (Exception e)
+        {
+            Util.log(MY_PACKAGE_NAME, "Failed to read " + assetPath + ": " + e);
         }
     }
 
@@ -199,52 +221,29 @@ public class Main implements IXposedHookZygoteInit, IXposedHookLoadPackage
 
         /**
          * https://developer.android.com/about/versions/11/privacy/package-visibility
-         * API30 adds new restrictions limiting apps from seeing our custom content provider at content://tw.fatminmin.xposed.minminguard/
-         * used to report back ad networks and removed ads.
+         * API30 adds new restrictions limiting apps from seeing our custom content provider at
+         * content://tw.fatminmin.xposed.minminguard/ used to report back ad networks and removed ads.
          *
-         * To get around this the target app needs:
-         * ...
-         *    <queries>
-         *        <package android:name="tw.fatminmin.xposed.minminguard" />
-         *    </queries>
-         * ...
-         * OR
-         * ...
-         *    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
-         * ...
-         * in its AndroidManifest.xml, this hack does tha latter.
+         * To get around this the hooked app needs QUERY_ALL_PACKAGES. This hack dynamically adds that
+         * permission to every app MinMinGuard is enabled for, right before the permission state is
+         * (re-)restored by PackageManager, so it gets granted like a manifest-declared permission.
          *
-         * Note that this implies a) hooking System Framework in LSposed Manager and b) needs a reboot after enabling an app in MinMinGuard
-         * because only android can access com.android.server.pm.permission.PermissionManagerService !!!
+         * Note that this requires hooking the system framework ("android" scope) and a reboot / app
+         * reinstall after enabling an app in MinMinGuard.
          *
-         * The implementation is based on Mino260806's snippet (Thanks!)
-         * https://forum.xda-developers.com/t/xposed-for-devs-how-to-dynamically-declare-permissions-for-a-target-app-without-altering-its-manifest-and-changing-its-signature.4440379/post-86833435
-         *
-         * More:
-         * https://stackoverflow.com/questions/63563995/failed-to-find-content-provider-in-api-30
-         * https://github.com/Lawiusz/xposed_lockscreen_visualizer/blob/master/app/src/main/java/pl/lawiusz/lockscreenvisualizerxposed/PermGrant.java
+         * The hook must survive framework changes:
+         *   - Android 11-14: com.android.server.pm.permission.PermissionManagerService
+         *                    restorePermissionState(SettingBase setting, boolean replace, ...)
+         *   - Android 15/16/17: implementation split into PermissionManagerServiceImpl, first
+         *                    argument is now the AndroidPackage interface (getPackageName() /
+         *                    getRequestedPermissions()) instead of a PackageSetting object.
+         * We hook every overload of "restorePermissionState" on both class names and read the
+         * package data defensively (interface method first, then plain field).
          */
         if (Build.VERSION.SDK_INT > 29) {
             if (lpparam.packageName.equals("android")) {
-                try {
-                    XposedBridge.hookAllMethods(XposedHelpers.findClass("com.android.server.pm.permission.PermissionManagerService", lpparam.classLoader), "restorePermissionState", new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            String pkgName = (String) XposedHelpers.getObjectField(param.args[0], "packageName");
-                            Util.log(MY_PACKAGE_NAME, "Package  " + pkgName + " is requesting permissions");
-                            if (isEnabled(pref, pkgName)) {
-                                List<String> permissions = (List<String>) XposedHelpers.getObjectField(param.args[0], "requestedPermissions");
-                                String query_all_perm = "android.permission.QUERY_ALL_PACKAGES";
-                                if (!permissions.contains(query_all_perm)) {
-                                    permissions.add(query_all_perm);
-                                    Util.log(MY_PACKAGE_NAME, "Added " + query_all_perm + " permission to " + pkgName);
-                                }
-                            }
-                        }
-                    });
-                } catch (Exception e) {
-                    Util.log(MY_PACKAGE_NAME, "PermissionManagerService -> " + e);
-                }
+                hookRestorePermissionState(lpparam, "com.android.server.pm.permission.PermissionManagerServiceImpl");
+                hookRestorePermissionState(lpparam, "com.android.server.pm.permission.PermissionManagerService");
             }
         }
 
@@ -285,5 +284,91 @@ public class Main implements IXposedHookZygoteInit, IXposedHookLoadPackage
                 }
             }
         });
+    }
+
+    /**
+     * Hooks every overload of {@code restorePermissionState} on the given PermissionManager
+     * implementation class and injects QUERY_ALL_PACKAGES into the package's requested permissions.
+     */
+    private static void hookRestorePermissionState(final LoadPackageParam lpparam, final String className)
+    {
+        try
+        {
+            Class<?> clazz = XposedHelpers.findClass(className, lpparam.classLoader);
+            XposedBridge.hookAllMethods(clazz, "restorePermissionState", new XC_MethodHook()
+            {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable
+                {
+                    Object pkg = param.args[0];
+                    if (pkg == null) return;
+
+                    String pkgName = null;
+                    try
+                    {
+                        pkgName = (String) XposedHelpers.callMethod(pkg, "getPackageName");
+                    }
+                    catch (Throwable ignored)
+                    {
+                    }
+                    if (pkgName == null)
+                    {
+                        try
+                        {
+                            pkgName = (String) XposedHelpers.getObjectField(pkg, "packageName");
+                        }
+                        catch (Throwable ignored)
+                        {
+                        }
+                    }
+
+                    if (pkgName == null || !isEnabled(pref, pkgName)) return;
+
+                    Object permissionsObj = null;
+                    /* Concrete implementation classes usually keep a mutable ArrayList/HashSet field
+                       (PackageSetting on A11-14, AndroidPackageImpl on A15+). Fall back to the
+                       interface accessor. Note: on A16+ getRequestedPermissions() returns a Set, on
+                       A11-15 a List - always handle it as a generic Collection. */
+                    try
+                    {
+                        permissionsObj = XposedHelpers.getObjectField(pkg, "requestedPermissions");
+                    }
+                    catch (Throwable ignored)
+                    {
+                    }
+                    if (permissionsObj == null)
+                    {
+                        try
+                        {
+                            permissionsObj = XposedHelpers.callMethod(pkg, "getRequestedPermissions");
+                        }
+                        catch (Throwable ignored)
+                        {
+                        }
+                    }
+
+                    if (permissionsObj instanceof Collection)
+                    {
+                        Collection<?> permissions = (Collection<?>) permissionsObj;
+                        if (!permissions.contains(QUERY_ALL_PACKAGES))
+                        {
+                            try
+                            {
+                                ((Collection<String>) permissions).add(QUERY_ALL_PACKAGES);
+                                Util.log(MY_PACKAGE_NAME, "Added " + QUERY_ALL_PACKAGES + " to " + pkgName);
+                            }
+                            catch (UnsupportedOperationException | ClassCastException e)
+                            {
+                                Util.log(MY_PACKAGE_NAME, "Could not add QUERY_ALL_PACKAGES to " + pkgName + ": " + e);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        catch (Throwable e)
+        {
+            Util.log(MY_PACKAGE_NAME, className + " -> " + e);
+        }
     }
 }
