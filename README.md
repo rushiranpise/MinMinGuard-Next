@@ -1,4 +1,10 @@
-# ![icon](images/ic_launcher.png) MinMinGuard
+# ![icon](images/ic_launcher.png) MinMinGuard Next
+
+> **MinMinGuard Next** is the actively maintained successor of the original
+> [MinMinGuard](http://forum.xda-developers.com/xposed/modules/xposed-minminguard-v1-7-0-cancelled-t2597332)
+> Xposed module. It is a **separate project**: rebuilt with a modern Material 3 UI, a fresh
+> package id (`tw.fatminmin.xposed.minminguard.next`), and support for today's Xposed
+> runtimes (LSPosed / Vector).
 
 - [Introduction](#introduction)
 - [Compatibility](#compatibility)
@@ -10,7 +16,7 @@
 
 ## Introduction
 
-MinMinGuard is an ad-remover made with the Xposed Framework for Android. MinMinGuard can completely remove both the ads inside apps and the empty space caused by those ads. Conventional ads-removing apps are only able to block the ad content, but the space taken by the ad will still remain unused (black). MinMinGuard successfully removes that black space, which extends the app window and makes your user-experience better!
+MinMinGuard Next is an ad-remover made with the Xposed Framework for Android. It can completely remove both the ads inside apps and the empty space caused by those ads. Conventional ads-removing apps are only able to block the ad content, but the space taken by the ad will still remain unused (black). MinMinGuard Next successfully removes that black space, which extends the app window and makes your user-experience better!
 
 ![Comparison](http://fatminmin.com/mmg/compare.png)
 
@@ -32,16 +38,16 @@ How it works:
 
 ### KernelSU / APatch notes
 
-MinMinGuard itself needs no special support code to run on KernelSU or APatch – it is a regular
+MinMinGuard Next itself needs no special support code to run on KernelSU or APatch – it is a regular
 LSPosed module. KernelSU/APatch do not include a Zygisk environment, so install a Zygisk provider
 first and then an LSPosed-compatible framework:
 
 1. Install a Zygisk provider module: **ZygiskNext** or **NeoZygisk** (open-source alternative).
 2. Install **LSPosed** or **Vector** (the framework runs on top of the Zygisk provider).
-3. Install the MinMinGuard APK and enable it in the framework's manager app, with the **"Android"
-   system framework checked in the module scope** (required for the Android 11+ package-visibility
-   workaround).
-4. Reboot and enable MinMinGuard for the apps you want.
+3. Install the MinMinGuard Next APK and enable it in the framework's manager app, with the
+   **"Android" system framework checked in the module scope** (required for the Android 11+
+   package-visibility workaround).
+4. Reboot and enable MinMinGuard Next for the apps you want.
 
 The main screen shows the detected framework (LSPosed / Vector / EdXposed, API version) and root
 manager (Magisk / KernelSU / APatch) in the status bar.
@@ -52,21 +58,23 @@ manager (Magisk / KernelSU / APatch) in the status bar.
 2. Install it as a normal app.
 3. Enable the module in your Xposed framework's manager (LSPosed / Vector / Xposed Installer) and
    include the **Android system framework** in the module's scope, then reboot.
-4. Open MinMinGuard and pick a mode:
+4. Open MinMinGuard Next and pick a mode:
    - **Auto**: block ads in every app.
    - **Blacklist**: only block in apps you toggle on.
    - **Whitelist**: block everywhere except apps you toggle on.
 
 ## Discussion and Supports
 
-If you have any idea or need some support, you are welcome to post on the
+If you have any idea or need some support, you are welcome to open an issue on the
+[GitHub repository](https://github.com/rushiranpise/MinMinGuard). For the original (discontinued)
+MinMinGuard project, see the
 [Xda Developers forum](http://forum.xda-developers.com/xposed/modules/xposed-minminguard-v1-7-0-cancelled-t2597332).
 
 ## Developing and Contributing
 
 ### Adding a new ad network into support
 
-You may find some apps' ads are not blocked by MinMinGuard. This usually happens because the app
+You may find some apps' ads are not blocked by MinMinGuard Next. This usually happens because the app
 uses an ad SDK that is not yet supported (e.g. a local ad provider, or a new SDK). Adding support
 for a new network is a small, self-contained task:
 
@@ -172,4 +180,5 @@ framework at runtime.
 
 ## Legal and Licensing
 
-MinMinGuard is licensed under the [GPL-3.0 license](LICENSE).
+MinMinGuard Next is licensed under the [GPL-3.0 license](LICENSE). It is a continuation of the
+original MinMinGuard project by fatminmin, which was also GPL-3.0.
