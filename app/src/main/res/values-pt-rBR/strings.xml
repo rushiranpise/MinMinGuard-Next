@@ -38,22 +38,60 @@
         Se algum aplicativo ainda mostra anúncios, você pode tentar ativar o recurso de filtragem de URL. Cuidado: isso
         pode resultar problema para Apps baseado em webview.
     </string>
-
+    <string name="btn_ok">OK</string>
     <string-array name="mode_array">
         <item>AUTO</item>
         <item>LISTA NEGRA</item>
         <item>LISTA BRANCA</item>
     </string-array>
-
-    <string name="btn_ok">OK</string>
     <string name="msg_xposed_not_enabled">Xposed não está ativado</string>
     <string name="msg_enabled_crash_report">Ativar crash report</string>
     <string name="msg_show_system_apps">Mostrar apps do sistema</string>
     <string name="msg_show_debug">Show debug info in Xposed log</string>
+    <string name="msg_show_launcher_icon">Mostrar ícone na tela inicial</string>
     <string name="msg_mode_apply">Aplicar</string>
+    <string name="msg_mode_applied">Modo %1$s aplicado</string>
     <string name="msg_block_num">Bloqueado %d ads</string>
     <string name="msg_ad_networks">Ad Internet:</string>
     <string name="msg_ads_blocked">Ads Bloqueado:</string>
     <string name="msg_not_detected">Não detectado</string>
+    <string name="msg_wait">Aguarde…</string>
+    <string name="msg_app_launch_fail">Este aplicativo não pode ser iniciado</string>
+    <string name="nav_title">Menu</string>
     <string name="option_enable_url_filter">Ativar filtro de url</string>
+    <string name="msg_runtime">Framework: %1$s   |   Root: %2$s</string>
+    <string name="mode_info_title">Como esse modo funciona</string>
+    <string name="mode_info_auto">O bloqueio de anúncios é aplicado a todos os aplicativos automaticamente, usando regras integradas para redes de anúncios conhecidas e SDKs de anúncios comuns. Não precisa de configuração - basta ativar o módulo e reiniciar.</string>
+    <string name="mode_info_blacklist">Apenas os aplicativos que você ativar serão bloqueados. Todo o resto fica intacto. Use isto quando quiser bloquear anúncios em alguns aplicativos específicos.</string>
+    <string name="mode_info_whitelist">Apenas os aplicativos que você ativar poderão manter os anúncios. Os anúncios são bloqueados em todos os outros. Use isto para manter anúncios nos aplicativos que você gosta.</string>
+    <string name="setting_theme">Tema</string>
+    <string name="setting_theme_system">Padrão do sistema</string>
+    <string name="setting_theme_light">Claro</string>
+    <string name="setting_theme_dark">Escuro</string>
+    <string name="setting_sort">Ordenar aplicativos por</string>
+    <string name="setting_sort_name">Nome do aplicativo</string>
+    <string name="setting_sort_package">Nome do pacote</string>
+    <string name="setting_sort_blocked">Anúncios bloqueados</string>
+    <string name="setting_export_config">Exportar configuração</string>
+    <string name="setting_import_config">Importar configuração</string>
+    <string name="setting_user_prefixes">Prefixos de classe de anúncio personalizados</string>
+    <string name="setting_user_prefixes_hint">Um prefixo de nome de classe por linha, por exemplo\ncom.example.adnetwork\nViews de classes correspondentes são tratadas como anúncios.</string>
+    <string name="msg_config_exported">Configuração exportada</string>
+    <string name="msg_config_imported">Configuração importada</string>
+    <string name="msg_config_import_failed">Falha na importação: arquivo inválido</string>
+    <string name="msg_config_export_failed">Falha na exportação</string>
+    <string name="batch_select_all">Selecionar todos</string>
+    <string name="batch_deselect_all">Desmarcar todos</string>
+    <string name="batch_enable">Ativar</string>
+    <string name="batch_disable">Desativar</string>
+    <string name="batch_close">Fechar</string>
+    <string name="batch_selected">%1$d selecionados</string>
+    <string name="msg_batch_done">%1$d aplicativos atualizados</string>
+    <string name="action_statistics">Estatísticas</string>
+    <string name="stats_total_blocked">Total de anúncios bloqueados</string>
+    <string name="stats_top_apps">Principais aplicativos</string>
+    <string name="stats_top_networks">Principais redes de anúncios</string>
+    <string name="stats_empty">Ainda não há dados de bloqueio. Abra alguns aplicativos que exibem anúncios e volte mais tarde.</string>
+    <string name="stats_apps_count">%1$d aplicativos</string>
+    <string name="stats_networks_count">%1$d redes</string>
 </resources>
